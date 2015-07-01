@@ -74,7 +74,6 @@ def PatternPositions(pattern, genome):
     for i in xrange(0, len(genome) - len(pattern) + 1):
         if genome[i:i + len(pattern)] == pattern:
             result += str(i) + " "
-
     return result.strip()
 
 
@@ -100,8 +99,6 @@ def ClumpFind(genome, k, l, t):
         else:
             patterns[p] = [i]
 
-    print len(patterns)
-    print len(set(patterns))
     patterns_copy = copy.deepcopy(patterns)
     # filter
     for pattern in patterns:
@@ -124,9 +121,8 @@ def ClumpFind(genome, k, l, t):
         # return modified set
         patterns = patterns_copy
 
-    return len(patterns)
-    # result = ""
-    # for key in patterns:
-        # result += key + " "
+    result = ""
+    for key in patterns:
+        result += key + " "
 
-    # return result.strip()
+    return result.strip()
