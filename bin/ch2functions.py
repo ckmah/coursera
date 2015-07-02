@@ -1,4 +1,3 @@
-import math
 import ch1functions as f1
 
 
@@ -175,6 +174,7 @@ def approxFrequentWords(genome, k, d):
 
 def approxFrequentWordsWithRevComp(genome, k, d):
     """
+    NOT WORKING
     Return the most frequently occuring k-mers in genome including reverse
     complements with at most d mismatches.
 
