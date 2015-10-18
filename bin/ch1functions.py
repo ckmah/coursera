@@ -73,6 +73,8 @@ def PatternPositions(pattern, genome):
     """
     Return all positions in which pattern occurs in genome.
 
+    Uses sliding window of length len(pattern) to check at each position in genome.
+
     Input: PatternPositions(ATAT, GATATATGCATATACTT)
     Output: 1 3 9
     """
@@ -104,6 +106,7 @@ def ClumpFind(genome, k, l, t):
             patterns[p].append(i)
         else:
             patterns[p] = [i]
+    print patterns
 
     patterns_copy = copy.deepcopy(patterns)
     # filter

@@ -7,27 +7,8 @@ import math
 
 lines = sys.stdin.read().splitlines()  # read in the input from STDIN
 
-# (k, d) = lines[0].split()
-# DNA = lines[1:]
+genome = lines[0]
+(k, l, t) = lines[1].split()
 
-# result = ""
-# for motif in f3.motifEnumeration(DNA, k, d):
-#     result += motif + ' '
-
-# print result.strip()
-
-numlist = []
-for line in lines:
-    numlist.extend(line.split())
-
-print numlist
-entropy = 0
-for num in numlist:
-    if num is 'x':
-        continue
-    num = int(num)
-    p = float(num) / 10
-    if p > 0:
-        entropy += p * math.log(p, 2)
-
-print entropy
+# print f3.greedyMotifSearch(k, t, DNA)
+print f3.createProfile(DNA)
