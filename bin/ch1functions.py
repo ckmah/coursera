@@ -6,6 +6,8 @@ def PatternCount(text, pattern):
     Counts number of occurences of pattern in text. Takes into account
     overlapping instances of pattern.
 
+    Uses sliding window of length len(pattern).
+
     Input: PatternCount(CABABAC, ABA)
     Output: 2
     """
@@ -19,6 +21,8 @@ def PatternCount(text, pattern):
 def FrequentWords(text, k):
     """
     Return the most frequently occuring k-mers.
+
+    Uses PatternCount(text, pattern) to count each pattern.
 
     Input: FrequentWords(ACGTTGCATGTCGCATGATGCATGAGAGCT, 4)
     Output: CATG GCAT
@@ -49,6 +53,8 @@ def FrequentWords(text, k):
 def RevComplement(sequence):
     """
     Given a sequence, return its reverse complement.
+
+    Uses dictionary to map bases to their complements.
 
     Input: RevComplement(AAAACCCGGT)
     Output: ACCGGGTTTT
