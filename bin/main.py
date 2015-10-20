@@ -8,7 +8,6 @@ import math
 lines = sys.stdin.read().splitlines()  # read in the input from STDIN
 
 genome = lines[0]
-(k, l, t) = lines[1].split()
+k, d = lines[1].split()
 
-# print f3.greedyMotifSearch(k, t, DNA)
-print f3.createProfile(DNA)
+print f2.approxFrequentWordsWithRevComp(genome, k, d)
