@@ -1,4 +1,6 @@
 import ch1functions as f1
+import os.path
+import sys
 
 
 def skew(sequence):
@@ -78,6 +80,9 @@ def approxPatternCount(pattern, genome, d):
 
 
 def neighbors(pattern, d):
+    """ Generates the set of patterns that are at most d distance away
+    from pattern.
+    """
     d = int(d)
     nucleotides = ['A', 'C', 'G', 'T']
 
@@ -89,7 +94,7 @@ def neighbors(pattern, d):
 
     neighborhood = set()
 
-    # dynamically generate smaller cases by taing off first letter
+    # dynamically generate smaller cases by taking off first letter
     suffixNeighbors = neighbors(pattern[1:], d)
     for text in suffixNeighbors:
         if hammingDistance(pattern[1:], text) < d:
@@ -101,6 +106,9 @@ def neighbors(pattern, d):
 
 
 def patternToNumber(pattern):
+    """ Converts pattern to number using base 4 with each base assigned a number
+    value.
+    """
     if len(pattern) == 0:
         return 0
     symbol = pattern[-1]
@@ -109,23 +117,36 @@ def patternToNumber(pattern):
 
 
 def baseToNumber(base):
+    """ Assigns each base to a number value of base 4.
+    """
     return {'A': 0, 'C': 1, 'G': 2, 'T': 3}[base]
 
 
+def numberToBase(base):
+    """ Converts number back to base using base 4.
+    """
+    return ['A', 'C', 'G', 'T'][base]
+
+
 def numberToPattern(number, k):
-    values = ['A', 'C', 'G', 'T']
+    """ Converts number to pattern by dividing by base 4. k is resulting
+    pattern length.
+    """
+
     number = int(number)
     k = int(k)
-    pattern = ""
-    while k > 1:
-        quotient, remainder = divmod(number, 4)
-        pattern = values[remainder] + pattern
-        number = quotient
-        k -= 1
-    if k == 1:
-        pattern = values[number] + pattern
 
-    return pattern
+    # base case
+    if k == 1:
+        return numberToBase(number)
+
+    # divide by 4, remainder is right most letter
+    prefixIndex, remainder = divmod(number, 4)
+    base = numberToBase(remainder)
+
+    # recursively convert pattern prefix
+    prefixPattern = numberToPattern(prefixIndex, k - 1)
+    return prefixPattern + base
 
 
 def approxFrequentWords(genome, k, d):
@@ -141,7 +162,7 @@ def approxFrequentWords(genome, k, d):
     freqPatterns = []  # set of most frequent words
     freqs = []  # frequency of pattern
     neighborhoods = []
-    index = []
+    index = [] # holds patterns converted as numbers
 
     # generate all possible k-mers
     for i in range(len(genome) - k + 1):
@@ -158,7 +179,7 @@ def approxFrequentWords(genome, k, d):
     # sort converted patterns
     index.sort()
 
-    # 2
+    # count pattern frequencies
     for i in range(len(neighborhoods) - 1):
         if index[i] == index[i + 1]:
             freqs[i + 1] = freqs[i] + 1
@@ -174,12 +195,11 @@ def approxFrequentWords(genome, k, d):
 
 def approxFrequentWordsWithRevComp(genome, k, d):
     """
-    NOT WORKING
-    Return the most frequently occuring k-mers in genome including reverse
-    complements with at most d mismatches.
+    Return the most frequently occuring k-mers (with mismatches and reverse
+    complements) in a string.
 
     Input: FrequentWords(ACGTTGCATGTCGCATGATGCATGAGAGCT, 4, 1)
-    Output: GATG ATGC ATGT
+    Output: ATGT ACAT
     """
 
     k = int(k)
@@ -191,42 +211,28 @@ def approxFrequentWordsWithRevComp(genome, k, d):
 
     # generate all possible k-mers
     for i in range(len(genome) - k + 1):
-        kmer = genome[i:i + k]
-        neighborhoods.extend(neighbors(kmer, d))
+        neighborhoods.extend(neighbors(genome[i:i + k], d))
+        neighborhoods.extend(neighbors(f1.RevComplement(genome[i:i + k]), d))
 
     freqs = [0] * len(neighborhoods)
 
     # convert patterns to numbers
     for i in range(len(neighborhoods)):
         pattern = neighborhoods[i]
-        num = patternToNumber(pattern)
-        index.append(num)
+        index.append(patternToNumber(pattern))
         freqs[i] = 1
-
-#############################################################
-    rev_neighborhoods = []
-    for pattern in neighborhoods:
-        rev_neighborhoods.append(f1.RevComplement(pattern))
-
-    # if reverse complement with at most d mismatches is in genome, + 1 freq
-    # to original
-    for i in range(len(rev_neighborhoods)):
-        pattern = rev_neighborhoods[i]
-        num = patternToNumber(pattern)
-        if num in index:
-            index.append(patternToNumber(neighborhoods[i]))
-            freqs.append(1)
 
     # sort converted patterns
     index.sort()
 
-    for i in range(len(index) - 1):
+    # count pattern frequencies
+    for i in range(len(neighborhoods) - 1):
         if index[i] == index[i + 1]:
             freqs[i + 1] = freqs[i] + 1
     maxCount = max(freqs)
 
     # convert max k-mers back to pattern
-    for i in range(len(index)):
+    for i in range(len(neighborhoods)):
         if freqs[i] == maxCount:
             pattern = numberToPattern(index[i], k)
             freqPatterns.append(pattern)

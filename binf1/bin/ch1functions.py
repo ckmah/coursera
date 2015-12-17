@@ -6,6 +6,8 @@ def PatternCount(text, pattern):
     Counts number of occurences of pattern in text. Takes into account
     overlapping instances of pattern.
 
+    Uses sliding window of length len(pattern).
+
     Input: PatternCount(CABABAC, ABA)
     Output: 2
     """
@@ -19,6 +21,8 @@ def PatternCount(text, pattern):
 def FrequentWords(text, k):
     """
     Return the most frequently occuring k-mers.
+
+    Uses PatternCount(text, pattern) to count each pattern.
 
     Input: FrequentWords(ACGTTGCATGTCGCATGATGCATGAGAGCT, 4)
     Output: CATG GCAT
@@ -50,6 +54,8 @@ def RevComplement(sequence):
     """
     Given a sequence, return its reverse complement.
 
+    Uses dictionary to map bases to their complements.
+
     Input: RevComplement(AAAACCCGGT)
     Output: ACCGGGTTTT
     """
@@ -66,6 +72,8 @@ def RevComplement(sequence):
 def PatternPositions(pattern, genome):
     """
     Return all positions in which pattern occurs in genome.
+
+    Uses sliding window of length len(pattern) to check at each position in genome.
 
     Input: PatternPositions(ATAT, GATATATGCATATACTT)
     Output: 1 3 9
@@ -98,6 +106,7 @@ def ClumpFind(genome, k, l, t):
             patterns[p].append(i)
         else:
             patterns[p] = [i]
+    print patterns
 
     patterns_copy = copy.deepcopy(patterns)
     # filter
